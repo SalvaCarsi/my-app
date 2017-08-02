@@ -1,13 +1,15 @@
-var express = require('express');
-var app = express();
-var MongoClient = require('mongodb').MongoClient
-var logger = require('morgan');
+import express from 'express';
+import logger from 'morgan';
+import mongodb from 'mongodb';
 
-var url = 'mongodb://localhost:27017/my-app';
+const app = express();
+const MongoClient = mongodb.MongoClient;
+
+const url = 'mongodb://localhost:27017/my-app';
 
 app.use(logger('dev'));
 
-app.post('/register', function(req, res) {
+app.post('/register', (req, res) => {
     MongoClient.connect(url, function(err, db) {
         var users = db.collection('users');
         users.insertOne({ name: "salva", password: "test1234" });
@@ -17,6 +19,6 @@ app.post('/register', function(req, res) {
     });
 });
 
-app.listen(3000, function () {
+app.listen(3000, () => {
   console.log('my app API listening on port 3000!');
 });
