@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var MongoClient = require('mongodb').MongoClient
-var morganLogger = require('morgan');
+var logger = require('morgan');
 
 var url = 'mongodb://localhost:27017/my-app';
 
