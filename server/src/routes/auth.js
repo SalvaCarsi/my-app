@@ -6,15 +6,21 @@ const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 
 router.post('/register', (req, res) => {
-    MongoClient.connect(mongo_url, function(err, db) {
+    MongoClient.connect(mongo_url, (err, db) => {
         const users = db.collection('users');
-        users.insertOne({ email: req.body.email, password: req.body.password });
-        db.close();
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({
-            message: 'registration successfull',
-            email: req.body.email,
-        }));
+        users.findOne({ email: req.body.email }, (err, doc) => {
+            res.setHeader('Content-Type', 'application/json');
+            if (doc === null) {
+                users.insertOne({ email: req.body.email, password: req.body.password });
+                res.send({
+                    message: 'auth.register.success',
+                    email: req.body.email,
+                });
+            } else {
+                res.send({ message: 'auth.register.error.user.exist' });
+            }
+            db.close();
+        });
     });
 });
 
