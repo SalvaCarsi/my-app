@@ -8,23 +8,24 @@
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "test": "eslint src"
   },
-"eslintConfig": {
+  "eslintConfig": {
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 7,
-        "sourceType": "module"
+      "ecmaVersion": 7,
+      "sourceType": "module"
     },
     "env": {
-        "node": true
+      "node": true
     },
     "rules": {
-        "no-console": 0,
-        "no-unused-vars": 1
+      "no-console": 0,
+      "no-unused-vars": 1
     }
-},
+  },
   "author": "Salva",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "mongodb": "^2.2.30",
     "morgan": "^1.8.2"
