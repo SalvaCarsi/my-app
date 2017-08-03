@@ -1,13 +1,13 @@
 import express from 'express';
 import mongodb from 'mongodb';
 import bcrypt from 'bcrypt';
-import { mongo_url } from '../config.js';
+import { MONGO_URL, BCRYPT_ROUNDS } from '../config.js';
 
 const router = express.Router();
 const MongoClient = mongodb.MongoClient;
 
 router.post('/register', (req, res) => {
-    MongoClient.connect(mongo_url).then((db) => {
+    MongoClient.connect(MONGO_URL).then((db) => {
         const users = db.collection('users');
         users.findOne({ email: req.body.email }).then((doc) => {
             if (doc !== null) {
@@ -15,7 +15,7 @@ router.post('/register', (req, res) => {
                 res.send({ message: 'auth.register.error.user.exist' });
             }
             else {
-                bcrypt.hash(req.body.email, 5).then((hash) => {
+                bcrypt.hash(req.body.email, BCRYPT_ROUNDS).then((hash) => {
                     users.insertOne({ email: req.body.email, password: hash });
                     db.close()
                     res.send({
