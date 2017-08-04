@@ -1,31 +1,39 @@
 import express from 'express';
-import mongodb from 'mongodb';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { MONGO_URL, BCRYPT_ROUNDS } from '../config.js';
+import User from '../models/User.model';
+
+mongoose.Promise = global.Promise;
+mongoose.connect(MONGO_URL, { useMongoClient: true });
 
 const router = express.Router();
-const MongoClient = mongodb.MongoClient;
 
 router.post('/register', (req, res) => {
-    MongoClient.connect(MONGO_URL).then((db) => {
-        const users = db.collection('users');
-        users.findOne({ email: req.body.email }).then((doc) => {
-            if (doc !== null) {
-                db.close();
-                res.send({ message: 'auth.register.error.user.exist' });
-            }
-            else {
-                bcrypt.hash(req.body.email, BCRYPT_ROUNDS).then((hash) => {
-                    users.insertOne({ email: req.body.email, password: hash });
-                    db.close()
-                    res.send({
-                        message: 'auth.register.success',
-                        email: req.body.email,
-                    });
-                });
-            }
+    bcrypt.hash(req.body.password, BCRYPT_ROUNDS).then((encryptedPassword) => {
+        const newUser = new User({
+            name: req.body.name,
+            email: req.body.email,
+            password: encryptedPassword,
         });
-    }).catch((error) => console.log(error));
+        newUser.save().then((doc) => {
+                console.log(doc);
+                console.log('here we are!');
+                res.send({
+                    messageId: 'auth.register.success',
+                    email: req.body.email,
+                });
+            }).catch((error) => {
+                console.log(`error: ${error}`);
+                res.send({
+                    messageId: 'auth.register.error',
+                    error: error,
+                });
+            })
+    }).catch((error) => {
+        console.log(`error: ${error}`);
+        res.send(error);
+    });
 });
 
 export default router;
