@@ -1,11 +1,9 @@
 import express from 'express';
-import logger from 'morgan';
 import bodyParser from 'body-parser';
 import auth from './routes/auth';
 
 const app = express();
 
-app.use(logger('dev'));
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: false
