@@ -36,9 +36,11 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }).then( user => {
+        console.log(`user ${user}`);
+        if (!user) res.status(401).end();
         bcrypt.compare(req.body.password, user.password).then( passwordMatches => {
             if (passwordMatches) res.json('logged in!');
-            else res.json('auth failed');
+            else res.status(401).end();
         }).catch( error => dealWithError(error, res, 'auth.login.error'));
     }).catch( error => dealWithError(error, res, 'auth.login.error'));
 });
