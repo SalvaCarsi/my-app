@@ -34,4 +34,13 @@ router.post('/register', (req, res) => {
     }).catch( error => dealWithError(error, res, 'auth.register.error'));
 });
 
+router.post('/login', (req, res) => {
+    User.findOne({ email: req.body.email }).then( user => {
+        bcrypt.compare(req.body.password, user.password).then( passwordMatches => {
+            if (passwordMatches) res.json('logged in!');
+            else res.json('auth failed');
+        }).catch( error => dealWithError(error, res, 'auth.login.error'));
+    }).catch( error => dealWithError(error, res, 'auth.login.error'));
+});
+
 export default router;
