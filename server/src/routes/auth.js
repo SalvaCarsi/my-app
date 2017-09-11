@@ -14,7 +14,7 @@ const dealWithError = (error, res, messageId) => {
     logInfo(`error: ${error}`);
     res.json({
         messageId,
-        error: error,
+        error: error.toString(),
     });
 }
 
@@ -38,11 +38,12 @@ router.post('/login', (req, res) => {
     User.findOne({ email: req.body.email }).then( user => {
         console.log(`user ${user}`);
         if (!user) res.status(401).end();
+        
         bcrypt.compare(req.body.password, user.password).then( passwordMatches => {
             if (passwordMatches) res.json('logged in!');
             else res.status(401).end();
-        }).catch( error => dealWithError(error, res, 'auth.login.error'));
-    }).catch( error => dealWithError(error, res, 'auth.login.error'));
+        }).catch( error => dealWithError(error, res, 'auth.login2.error'));
+    }).catch( error => dealWithError(error, res, 'auth.login1.error'));
 });
 
 export default router;
